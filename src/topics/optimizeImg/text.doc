@@ -1,0 +1,122 @@
+📌 Image Performance Cheatsheet
+
+- ✅ Image Size: <= 300KB for hero/LCP images
+- ✅ Format: WebP or AVIF > JPG > PNG
+- ✅ Dimensions: 768px (mobile), 1200px+ (desktop)
+- ✅ Test on: Fast 4G or Fast 3G, cache disabled
+- ✅ Use width/height to avoid CLS
+- ✅ Reduce hydration delay in React for faster LCP
+- ✅ Use CDN with cache headers for faster delivery
+- ✅ Use Next.js <Image /> component for auto optimization
+- ✅ Use `<picture>` and `srcset` for responsive images
+
+------------------------------step 1------------------------------ 
+step 1 by adding only height, width and loading:- lazy or eager and reducing img size by 300k
+
+/**
+ * 🧠 Image Optimization Summary (Practical Case Study)
+ *
+ * 🔍 Initial Setup:
+ * - Image: 4MB JPG (imported directly)
+ * - No width/height defined
+ * - No compression or optimization
+ *
+ * 📉 Initial Performance:
+ * - LCP: 6.4s ❌ (very poor)
+ * - CLS: 0.81 ❌ (layout shift)
+ *
+ * ✅ Step 1: Added width & height attributes
+ * - LCP improved to 1.79s
+ * - CLS dropped to 0.03 ✅
+ *
+ * ⚠️ Step 2: Converted to WebP (1.2MB)
+ * - LCP degraded to 3.54s (still large file)
+ * - CLS stayed stable
+ *
+ * ✅ Step 2.5: Compressed WebP to 218KB
+ * - Final LCP: 2.22s 🟢 (Good performance)
+ * - CLS: 0.03 ✅
+ *
+ * 📌 Lessons:
+ * - Add explicit width & height to prevent layout shift (CLS)
+ * - Compress & convert large images to WebP/AVIF for LCP
+ * - Keep hero/banner images under ~300KB for best results
+ */
+
+------------------------------step 2------------------------------ 
+Compress & convert images to modern formats (WebP/AVIF) and resize properly
+
+/**
+ * - Convert JPG/PNG → WebP or AVIF for smaller file size
+ * - Use tools: Squoosh, TinyPNG, or CLI libraries like sharp
+ * - Resize images according to max display size (e.g., 1200px desktop)
+ * - Compress images further to reduce bytes (target <=300KB)
+ * - Test impact on LCP and CLS after compression
+ */
+
+------------------------------step 3------------------------------ 
+Use `<picture>` and `srcset` for responsive images
+
+/**
+ * - Use `<picture>` element to provide multiple image sources/formats:
+ *    ```jsx
+ *    <picture>
+ *      <source srcSet="image.webp" type="image/webp" />
+ *      <source srcSet="image.jpg" type="image/jpeg" />
+ *      <img src="image.jpg" alt="description" width="1200" height="800" loading="lazy" />
+ *    </picture>
+ *    ```
+ * - Use `srcset` attribute on `<img>` to serve images for different viewport sizes:
+ *    ```html
+ *    <img 
+ *      src="image-1200.jpg" 
+ *      srcset="image-600.jpg 600w, image-1200.jpg 1200w" 
+ *      sizes="(max-width: 600px) 600px, 1200px" 
+ *      alt="desc" width="1200" height="800" loading="lazy" 
+ *    />
+ *    ```
+ * - This reduces data usage on smaller devices and improves LCP
+ */
+
+------------------------------step 4------------------------------ 
+Lazy Loading, Priority, and Decoding in Next.js or React
+
+/**
+ * - Use lazy loading (`loading="lazy"`) for below-the-fold images
+ * - For hero/LCP images, set `priority` prop in Next.js <Image />
+ * - Next.js sets decoding="async" by default for better painting
+ * - Avoid blocking the main thread by async decoding images
+ */
+
+------------------------------step 5------------------------------ 
+CDN Delivery and Cache Control Headers
+
+/**
+ * - Serve images via CDN (Vercel, Cloudflare, AWS CloudFront)
+ * - Set HTTP Cache-Control headers: `public, max-age=31536000, immutable`
+ * - This ensures fast delivery globally and browser caching
+ * - Preload critical LCP images to improve perceived load speed
+ */
+
+------------------------------step 6------------------------------ 
+Next.js `<Image />` Benefits & Usage
+
+/**
+ * - Requires explicit width & height to prevent CLS
+ * - Automatically optimizes image formats & sizes per device
+ * - Lazy loads images by default except for those with `priority`
+ * - Integrates with Vercel Edge CDN for fast global delivery
+ * - Handles responsive images with srcSet & sizes internally
+ * - Allows external image domains via next.config.js configuration
+ */
+
+------------------------------bonus------------------------------ 
+Other Important Notes
+
+/**
+ * - Test on slow network (Fast 3G or throttled Fast 4G), and no cache
+ * - Use Lighthouse or WebPageTest to measure LCP, CLS, and FID
+ * - Hydration delay affects LCP in React; minimize JS bundle size & improve SSR
+ * - Provide meaningful alt text for accessibility & SEO
+ * - Avoid layout shift by reserving space and avoid injecting content late
+ */
